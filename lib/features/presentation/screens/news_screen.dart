@@ -13,14 +13,16 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
   int _currentTabIndex = 0;
   bool _isInternetConnected = true;
   late final InternetConnectionCheckerPlus _connectionChecker;
-  late Stream<InternetConnectionStatus> _statusStream;
+  StreamSubscription? _connectionSubscription;
 
   @override
   void initState() {
     super.initState();
 
     _connectionChecker = InternetConnectionCheckerPlus();
-    _statusStream = _connectionChecker.onStatusChange;
+
+    // Initial check
+    _checkInitialConnection();
     _listenToConnectionStatus();
 
     // Initialize with a placeholder value (will be updated in didChangeDependencies)
@@ -28,6 +30,20 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
     _tabController.addListener(_handleTabSelection);
 
     context.read<NewsBloc>().add(const FetchNewsEvent(category: null));
+  }
+
+  Future<void> _checkInitialConnection() async {
+    // Check current status immediately
+    final hasInternet = await _connectionChecker.hasConnection;
+    if (mounted) {
+      setState(() {
+        _isInternetConnected = hasInternet;
+      });
+      // If we found internet, and we haven't loaded news yet, this is a good time to fetch
+      if (hasInternet && context.read<NewsBloc>().state is NewsInitial) {
+        context.read<NewsBloc>().add(const FetchNewsEvent(category: null));
+      }
+    }
   }
 
   @override
@@ -46,22 +62,29 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // Dispose of the TabController when the widget is removed from the widget tree
+    _connectionSubscription?.cancel();
     _tabController.removeListener(_handleTabSelection);
     _tabController.dispose();
     super.dispose();
   }
 
   void _listenToConnectionStatus() {
-    _statusStream.listen((status) {
-      setState(() {
-        _isInternetConnected = (status == InternetConnectionStatus.connected);
-      });
+    _connectionSubscription =
+        _connectionChecker.onStatusChange.listen((status) {
+      final isConnected = (status == InternetConnectionStatus.connected);
 
-      if (_isInternetConnected) {
+      // LOGIC: If it WAS disconnected and now IS connected, trigger refresh
+      if (isConnected && !_isInternetConnected) {
         if (mounted) {
+          // Trigger refresh only when coming back from offline
           context.read<NewsBloc>().add(const RefreshNewsEvent());
         }
+      }
+
+      if (mounted) {
+        setState(() {
+          _isInternetConnected = isConnected;
+        });
       }
     });
   }
@@ -182,7 +205,18 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
       builder: (context, state) {
         if (!_isInternetConnected &&
             (state is! NewsLoaded || state.articles.isEmpty)) {
-          return _buildNoInternetState();
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<NewsBloc>().add(const RefreshNewsEvent());
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height - 200,
+                child: _buildNoInternetState(),
+              ),
+            ),
+          );
         }
 
         if (state is NewsLoading && _isInternetConnected) {
@@ -211,21 +245,49 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
         }
 
         if (state is NewsLoaded && state.articles.isNotEmpty) {
-          return ListView.builder(
-            itemCount: state.articles.length,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            itemBuilder: (context, index) {
-              return ArticleCard(article: state.articles[index]);
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<NewsBloc>().add(const RefreshNewsEvent());
             },
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: state.articles.length,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              itemBuilder: (context, index) {
+                return ArticleCard(article: state.articles[index]);
+              },
+            ),
           );
         }
 
         if (state is NewsLoaded && state.articles.isEmpty) {
-          return _buildEmptyState();
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<NewsBloc>().add(const RefreshNewsEvent());
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height - 200,
+                child: _buildEmptyState(),
+              ),
+            ),
+          );
         }
 
         if (state is NewsError) {
-          return _buildErrorState(state.message);
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<NewsBloc>().add(const RefreshNewsEvent());
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height - 200,
+                child: _buildErrorState(state.message),
+              ),
+            ),
+          );
         }
 
         return const SizedBox();
