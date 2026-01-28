@@ -5,11 +5,9 @@
 A sophisticated Flutter news application that mimics the Google News experience. It uses [NewsAPI.org](https://newsapi.org/) to fetch real-time headlines and articles from around the globe, featuring local persistent storage, multi-language support, and optimized performance.
 
 ---
-## Screen Shoot
-https://github.com/CS2487/copy_of_news_google/blob/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A4%D9%A2%D9%A3.jpg
-https://github.com/CS2487/copy_of_news_google/blob/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A5%D9%A1%D9%A5.jpg
-https://github.com/CS2487/copy_of_news_google/blob/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A5%D9%A2%D9%A2.jpg
-https://github.com/CS2487/copy_of_news_google/blob/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A5%D9%A3%D9%A9.jpg
+## 🖼️ Screenshots
+
+<div align="center"> <img src="https://github.com/CS2487/copy_of_news_google/raw/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A4%D9%A2%D9%A3.jpg" width="24%"> <img src="https://github.com/CS2487/copy_of_news_google/raw/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A5%D9%A1%D9%A5.jpg" width="24%"> <img src="https://github.com/CS2487/copy_of_news_google/raw/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A5%D9%A2%D9%A2.jpg" width="24%"> <img src="https://github.com/CS2487/copy_of_news_google/raw/main/assets/Screen%20shoot/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5%D9%A0%D9%A2%D9%A0%D9%A4-%D9%A0%D9%A7%D9%A1%D9%A5%D9%A3%D9%A9.jpg" width="24%"> </div>
 
 ## ✨ Features
 
@@ -78,3 +76,4 @@ https://github.com/CS2487/copy_of_news_google/blob/main/assets/Screen%20shoot/Sc
 
 Feel free to ⭐ star, 🍴 fork, and contribute to the project.  
 Pull requests and suggestions are always welcome!
+
