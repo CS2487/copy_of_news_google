@@ -1,4 +1,5 @@
 import 'package:copy_of_news_google/core/imports/imports.dart';
+
 class MyApp extends StatelessWidget {
   final SharedPreferences prefs;
 
@@ -8,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => NewsBloc(), lazy: false),
+        BlocProvider(create: (context) => NewsBloc()),
         BlocProvider(create: (context) => BookmarkBloc()),
         BlocProvider(create: (context) => LocaleBloc(prefs)..add(LoadLocale())),
       ],

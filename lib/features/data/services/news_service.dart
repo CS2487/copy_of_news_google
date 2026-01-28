@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:copy_of_news_google/features/data/models/article.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
+
 class NewsService {
   static const String _apiKey = 'adbe81672b064b2f870cc55d15d2c501';
   static const String _baseUrl = 'https://newsapi.org/v2';
@@ -30,16 +32,14 @@ class NewsService {
       if (query != null && query.isNotEmpty) 'q': query,
     };
 
-    final uri = Uri.parse('$_baseUrl/top-headlines').replace(queryParameters: queryParams);
+    final uri = Uri.parse('$_baseUrl/top-headlines')
+        .replace(queryParameters: queryParams);
 
     try {
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        final articles = (json['articles'] as List)
-            .map((article) => Article.fromJson(article))
-            .toList();
+        final articles = await compute(_parseArticles, response.body);
 
         await _cacheData(cacheKey, articles);
         return articles;
@@ -71,10 +71,7 @@ class NewsService {
       final response = await http.get(uri);
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        final articles = (json['articles'] as List)
-            .map((article) => Article.fromJson(article))
-            .toList();
+        final articles = await compute(_parseArticles, response.body);
 
         await _cacheData(cacheKey, articles);
         return articles;
@@ -109,4 +106,12 @@ class NewsService {
     await prefs.setString(key, jsonEncode(articleList));
     await prefs.setInt('${key}_time', DateTime.now().millisecondsSinceEpoch);
   }
+}
+
+// Top-level function for compute
+List<Article> _parseArticles(String responseBody) {
+  final json = jsonDecode(responseBody);
+  return (json['articles'] as List)
+      .map((article) => Article.fromJson(article))
+      .toList();
 }

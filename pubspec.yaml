@@ -13,13 +13,10 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   provider:
-  webview_flutter:
-  dio: 
-  flutter_bloc: 
-  bloc: 
+  flutter_bloc:
+  bloc:
   shared_preferences:
-  conditional_builder_null_safety: 
-  hexcolor:
+
   equatable:
   shimmer:
   http: 

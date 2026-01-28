@@ -1,4 +1,5 @@
 import 'package:copy_of_news_google/core/imports/imports.dart';
+
 class ArticleCard extends StatelessWidget {
   final Article article;
 
@@ -17,20 +18,23 @@ class ArticleCard extends StatelessWidget {
             ClipRRect(
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
-              child: Image.network(
-                article.urlToImage!,
+              child: CachedNetworkImage(
+                imageUrl: article.urlToImage!,
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 200,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(color: Colors.grey[300]),
-                    child: const Icon(Icons.broken_image,
-                        size: 50, color: Colors.grey),
-                  );
-                },
+                placeholder: (context, url) => Container(
+                  height: 200,
+                  color: Colors.grey[200],
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 200,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(color: Colors.grey[300]),
+                  child: const Icon(Icons.broken_image,
+                      size: 50, color: Colors.grey),
+                ),
               ),
             ),
           Padding(
@@ -133,7 +137,9 @@ class ArticleCard extends StatelessWidget {
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
                   }
-                  Navigator.pop(context);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 },
               ),
               BlocBuilder<BookmarkBloc, BookmarkState>(

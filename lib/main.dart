@@ -1,4 +1,3 @@
-
 import 'package:copy_of_news_google/core/imports/imports.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

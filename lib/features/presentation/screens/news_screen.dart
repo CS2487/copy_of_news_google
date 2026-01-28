@@ -6,6 +6,7 @@ class NewsScreen extends StatefulWidget {
   @override
   State<NewsScreen> createState() => _NewsScreenState();
 }
+
 class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
   late TabController _tabController;
   int _selectedNavIndex = 0;
@@ -58,7 +59,9 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
       });
 
       if (_isInternetConnected) {
-        context.read<NewsBloc>().add(const RefreshNewsEvent());
+        if (mounted) {
+          context.read<NewsBloc>().add(const RefreshNewsEvent());
+        }
       }
     });
   }
@@ -123,17 +126,17 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
         ],
         bottom: _selectedNavIndex == 0
             ? PreferredSize(
-          preferredSize: const Size.fromHeight(48),
-          child: TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabs: [
-              Tab(text: l10n.all),
-              ...Categories.all(context)
-                  .map((category) => Tab(text: category.name)),
-            ],
-          ),
-        )
+                preferredSize: const Size.fromHeight(48),
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabs: [
+                    Tab(text: l10n.all),
+                    ...Categories.all(context)
+                        .map((category) => Tab(text: category.name)),
+                  ],
+                ),
+              )
             : null,
       ),
       body: IndexedStack(
@@ -144,7 +147,7 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
             children: [
               _buildNewsScreen(category: null),
               ...Categories.all(context).map(
-                    (category) => _buildNewsScreen(category: category.apiName),
+                (category) => _buildNewsScreen(category: category.apiName),
               ),
             ],
           ),
@@ -191,9 +194,9 @@ class _NewsScreenState extends State<NewsScreen> with TickerProviderStateMixin {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Shimmer.fromColors(
                   baseColor:
-                  Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.3),
                   highlightColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      Theme.of(context).colorScheme.primary.withOpacity(0.3),
                   child: Card(
                     elevation: 3,
                     shape: RoundedRectangleBorder(

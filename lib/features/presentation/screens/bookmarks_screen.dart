@@ -1,9 +1,11 @@
 import 'package:copy_of_news_google/core/imports/imports.dart';
+
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});
 
   @override
-  _BookmarksScreenState createState() => _BookmarksScreenState();
+  @override
+  State<BookmarksScreen> createState() => _BookmarksScreenState();
 }
 
 class _BookmarksScreenState extends State<BookmarksScreen> {
@@ -62,15 +64,15 @@ class _EmptyBookmarksWidget extends StatelessWidget {
           Text(
             l10n.no_bookmarks_yet,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.grey,
-            ),
+                  color: Colors.grey,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             l10n.bookmarks_explanation,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
+                  color: Colors.grey,
+                ),
           ),
         ],
       ),
